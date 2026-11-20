@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=../vendor/symfony/dependency-injection/Loader/schema/services.schema.json
+
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+# See also https://symfony.com/doc/current/service_container/import.html
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    # Toutes les classes de src sauf les services Groq
+    App\:
+        resource: '../src/'
+        exclude: '../src/{DependencyInjection,Entity,Migrations,Tests,Kernel.php,AI/GroqKeywordGenerator.php,AI/GroqPhraseGenerator.php,AI/GroqResponseGenerator.php}'
+
+    # Déclaration explicite de GroqKeywordGenerator
+    App\AI\GroqKeywordGenerator:
+        arguments:
+            $client: '@http_client'
+            $apiKey: '%env(GROQ_API_KEY)%'
+            $logger: '@logger'
+
+    # Déclaration explicite de GroqPhraseGenerator
+    App\AI\GroqPhraseGenerator:
+        arguments:
+            $client: '@http_client'
+            $apiKey: '%env(GROQ_API_KEY)%'
+            $logger: '@logger'
+
+    # Déclaration explicite de GroqResponseGenerator
+    App\AI\GroqResponseGenerator:
+        arguments:
+            $client: '@http_client'
+            $apiKey: '%env(GROQ_API_KEY)%'
+            $logger: '@logger'
+
+    # Interface pointe vers Groq
+    App\AI\KeywordGeneratorInterface:
+        alias: App\AI\GroqKeywordGenerator
+
+    # Rate limiter bindings pour AuthController
+    App\Controller\AuthController:
+        arguments:
+            $authLoginLimiter: '@limiter.auth_login'
+
+
