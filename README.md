@@ -104,3 +104,8 @@ ComMob/
 ├── .env                    # Variables d'environnement partagées
 └── README.md
 ```
+
+## Auteurs
+
+- Jérémy Monguin ([@jermgn](https://github.com/jermgn))
+- Soufiane Saidi ([@saidijr10](https://github.com/saidijr10))
